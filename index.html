@@ -1,0 +1,590 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LUFFY SHOP 卍</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Tahoma, Arial, sans-serif;
+  background: #101010;
+  color: white;
+}
+
+header {
+  background: #080808;
+  padding: 22px 7%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #d6a52b;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.logo {
+  color: #e7b83f;
+  font-size: 27px;
+  font-weight: bold;
+}
+
+.cart-button {
+  background: #d6a52b;
+  color: black;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.hero {
+  text-align: center;
+  padding: 85px 20px;
+  background: linear-gradient(135deg, #240000, #101010, #382400);
+}
+
+.hero h1 {
+  font-size: 45px;
+  color: #f0bd42;
+  margin-bottom: 15px;
+}
+
+.hero p {
+  color: #ddd;
+  font-size: 18px;
+  margin-bottom: 25px;
+}
+
+.shop-button {
+  display: inline-block;
+  padding: 13px 30px;
+  background: #d6a52b;
+  color: black;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
+.section-title {
+  text-align: center;
+  color: #e7b83f;
+  margin: 40px 0 25px;
+  font-size: 30px;
+}
+
+.products {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 22px;
+  padding: 20px 7% 60px;
+}
+
+.product {
+  background: #1d1d1d;
+  border: 1px solid #393939;
+  border-radius: 12px;
+  overflow: hidden;
+  text-align: center;
+  padding-bottom: 20px;
+  transition: 0.3s;
+}
+
+.product:hover {
+  transform: translateY(-6px);
+  border-color: #d6a52b;
+}
+
+.product img {
+  width: 100%;
+  height: 190px;
+  object-fit: cover;
+  background: #292929;
+}
+
+.product h3 {
+  margin: 15px 5px 8px;
+}
+
+.price {
+  color: #f0bd42;
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.add-button {
+  background: #d6a52b;
+  border: none;
+  padding: 11px 22px;
+  border-radius: 7px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.add-button:hover {
+  background: #ffcf55;
+}
+
+.cart {
+  display: none;
+  background: #202020;
+  padding: 25px 7%;
+  border-top: 2px solid #d6a52b;
+}
+
+.cart h2 {
+  color: #f0bd42;
+  margin-bottom: 15px;
+}
+
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid #444;
+  gap: 10px;
+}
+
+.remove-button {
+  background: #9d2525;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.total {
+  color: #f0bd42;
+  font-size: 22px;
+  margin-top: 20px;
+}
+
+footer {
+  background: #080808;
+  text-align: center;
+  padding: 25px;
+  color: #aaa;
+  border-top: 1px solid #d6a52b;
+}
+
+@media(max-width:600px) {
+  .hero h1 { font-size: 32px; }
+  header { justify-content: center; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">🏴‍☠️ LUFFY SHOP 卍</div>
+  <button class="cart-button" onclick="toggleCart()">
+    🛒 السلة (<span id="count">0</span>)
+  </button>
+</header>
+
+<section class="hero">
+  <h1>مرحباً بك في LUFFY SHOP</h1>
+  <p>وجهتك الأولى لأفضل المنتجات والعروض 🔥</p>
+  <a href="#products" class="shop-button">تسوق الآن</a>
+</section>
+
+<h2 class="section-title" id="products">🔥 منتجاتنا</h2>
+<div style="text-align:center; padding:15px 7%;">
+  <input
+    type="text"
+    id="searchInput"
+    placeholder="🔍 ابحث عن منتج..."
+    oninput="searchProducts()"
+    style="
+      width:100%;
+      max-width:500px;
+      padding:15px;
+      border-radius:10px;
+      border:2px solid #d6a52b;
+      background:#1d1d1d;
+      color:white;
+      font-size:16px;
+      outline:none;
+    ">
+</div>
+<div style="text-align:center; padding:15px;">
+  <button class="add-button" onclick="filterProducts('all')">الكل</button>
+  <div style="text-align:center; margin:20px;">
+  <button class="cart-button" onclick="toggleAdmin()">
+    ⚙️ لوحة التحكم
+  </button>
+</div>
+
+<div id="adminPanel" style="
+  display:none;
+  background:#202020;
+  padding:25px;
+  margin:20px 7%;
+  border:1px solid #d6a52b;
+  border-radius:12px;
+">
+  <h2 style="color:#e7b83f; margin-bottom:20px;">
+    إدارة المنتجات
+  </h2>
+
+  <input id="newName" placeholder="اسم المنتج"
+    style="width:100%;padding:12px;margin:8px 0;">
+
+  <input id="newPrice" type="number" min="0"
+  step="0.01" placeholder="السعر بالدولار"
+  style="width:100%;padding:12px;margin:8px 0;">
+
+  <input id="newImage" type="text"
+  placeholder="رابط صورة المنتج"
+  style="width:100%;padding:12px;margin:8px 0;">
+    step="0.01" placeholder="السعر بالدولار"
+    style="width:100%;padding:12px;margin:8px 0;">
+
+  <select id="newCategory"
+    style="width:100%;padding:12px;margin:8px 0;">
+    <option value="freefire">Free Fire</option>
+    <option value="pubg">PUBG Mobile</option>
+    <option value="other">أخرى</option>
+  </select>
+
+  <button class="add-button" onclick="addProduct()">
+    ➕ إضافة المنتج
+  </button>
+
+  <p style="margin-top:15px;color:#aaa;">
+    يمكنك حذف المنتجات التي أضفتها من بطاقاتها.
+  </p>
+</div>
+  <button class="add-button" onclick="filterProducts('freefire')">Free Fire</button>
+  <button class="add-button" onclick="filterProducts('pubg')">PUBG Mobile</button>
+  <button class="add-button" onclick="filterProducts('other')">أخرى</button>
+</div>
+<section class="products" id="productList">
+
+  <div class="product" data-category="freefire">
+    <img src="https://placehold.co/400x300/222222/ffffff?text=Product+1" alt="منتج 1">
+    <h3>باقة 110 جوهرة</h3>
+<div class="price">$2</div>
+    <button class="add-button" onclick="addToCart('المنتج الأول',10)">أضف إلى السلة</button>
+  </div>
+
+  <div class="product" data-category="pubg">
+    <img src="https://placehold.co/400x300/222222/ffffff?text=Product+2" alt="منتج 2">
+    <h3>المنتج الثاني</h3>
+    <div class="price">$15</div>
+    <button class="add-button" onclick="addToCart('المنتج الثاني',15)">أضف إلى السلة</button>
+  </div>
+
+    <div class="product" data-category="other">
+    <img src="https://placehold.co/400x300/222222/ffffff?text=Product+3" alt="منتج 3">
+    <h3>المنتج الثالث</h3>
+    <div class="price">$20</div>
+    <button class="add-button" onclick="addToCart('المنتج الثالث',20)">أضف إلى السلة</button>
+  </div>
+
+    <div class="product" data-category="other">
+    <img src="https://placehold.co/400x300/222222/ffffff?text=Product+4" alt="منتج 4">
+    <h3>المنتج الرابع</h3>
+    <div class="price">$25</div>
+    <button class="add-button" onclick="addToCart('المنتج الرابع',25)">أضف إلى السلة</button>
+  </div>
+
+</section>
+
+<section class="cart" id="cart" style="display:none;">
+  <h2>🛒 سلة المشتريات</h2>
+
+  <div id="cartItems"></div>
+
+  <div class="total">
+    المجموع: $<span id="total">0</span>
+  </div>
+
+  <button class="add-button" onclick="checkout()">
+    إتمام الطلب عبر واتساب
+  </button>
+</section>
+<footer>
+  <p>© 2026 LUFFY SHOP 卍 - جميع الحقوق محفوظة</p>
+  <p>صُنع بحب ❤️ لعشاق التسوق</p>
+</footer>
+
+<script>
+let cart = [];
+function filterProducts(category) {
+  let products = document.querySelectorAll(".product");
+
+  products.forEach(product => {
+    let productCategory = product.dataset.category;
+
+    product.style.display =
+      category === "all" || productCategory === category
+      ? "block"
+      : "none";
+  });
+
+  document.getElementById("searchInput").value = "";
+}
+function searchProducts() {
+  let search = document.getElementById("searchInput")
+    .value.toLowerCase();
+
+  let products = document.querySelectorAll(".product");
+
+  products.forEach(product => {
+    let name = product.querySelector("h3")
+      .textContent.toLowerCase();
+
+    product.style.display =
+      name.includes(search) ? "block" : "none";
+  });
+}
+function toggleAdmin() {
+  let panel = document.getElementById("adminPanel");
+
+  panel.style.display =
+    panel.style.display === "block" ? "none" : "block";
+}
+
+function addProduct() {
+  let name = document.getElementById("newName").value.trim();
+  let price = Number(document.getElementById("newPrice").value);
+  let category = document.getElementById("newCategory").value;
+  let image = document.getElementById("newImage").value.trim();
+
+  if (!name || document.getElementById("newPrice").value === ""
+      || !Number.isFinite(price) || price < 0) {
+    alert("أدخل اسم المنتج وسعراً صحيحاً");
+    return;
+  }
+
+  let products = JSON.parse(
+    localStorage.getItem("luffyProducts") || "[]"
+  );
+
+  let product = {
+  id: Date.now(),
+  name: name,
+  price: price,
+  category: category,
+  image: image
+};
+
+  products.push(product);
+
+  localStorage.setItem("luffyProducts", JSON.stringify(products));
+
+  showProduct(product);
+
+  document.getElementById("newName").value = "";
+  document.getElementById("newPrice").value = "";
+  document.getElementById("newImage").value = "";
+  
+  alert("تمت إضافة المنتج بنجاح!");
+}
+
+
+
+function showProduct(product) {
+  let card = document.createElement("div");
+  card.className = "product";
+  card.dataset.category = product.category;
+  card.dataset.customId = product.id;
+
+  let img = document.createElement("img");
+  img.src = product.image || "https://placehold.co/400x300/222222/ffffff?text=Product";
+  img.alt = product.name;
+  card.appendChild(img);
+
+  let title = document.createElement("h3");
+  title.textContent = product.name;
+
+  let price = document.createElement("div");
+  price.className = "price";
+  price.textContent = "$" + product.price;
+
+  let add = document.createElement("button");
+  add.className = "add-button";
+  add.textContent = "أضف إلى السلة";
+  add.onclick = () => addToCart(product.name, product.price);
+
+  let edit = document.createElement("button");
+  edit.className = "add-button";
+  edit.textContent = "✏️ تعديل المنتج";
+  edit.style.margin = "12px 5px 0";
+
+  edit.onclick = () => {
+    let name = prompt("اسم المنتج:", product.name);
+    if (name === null || !name.trim()) return;
+
+    let priceValue = prompt("السعر بالدولار:", product.price);
+    if (priceValue === null || priceValue.trim() === "") return;
+
+    let newPrice = Number(priceValue);
+    if (!Number.isFinite(newPrice) || newPrice < 0) {
+      alert("السعر غير صحيح");
+      return;
+    }
+
+    let image = prompt("رابط الصورة:", product.image || "");
+    if (image === null) return;
+
+    let category = prompt(
+      "التصنيف: freefire أو pubg أو other",
+      product.category
+    );
+    if (category === null) return;
+
+    category = category.trim().toLowerCase();
+
+    if (!["freefire", "pubg", "other"].includes(category)) {
+      alert("التصنيف غير صحيح. استخدم freefire أو pubg أو other");
+      return;
+    }
+
+    let products = JSON.parse(
+      localStorage.getItem("luffyProducts") || "[]"
+    );
+
+    products = products.map(p =>
+      p.id === product.id
+        ? {
+            ...p,
+            name: name.trim(),
+            price: newPrice,
+            image: image.trim(),
+            category: category
+          }
+        : p
+    );
+
+    localStorage.setItem("luffyProducts", JSON.stringify(products));
+
+    product.name = name.trim();
+    product.price = newPrice;
+    product.image = image.trim();
+    product.category = category;
+
+    card.dataset.category = category;
+
+    title.textContent = product.name;
+    price.textContent = "$" + product.price;
+    img.src = product.image || "https://placehold.co/400x300/222222/ffffff?text=Product";
+    img.alt = product.name;
+
+    alert("تم تعديل المنتج بنجاح!");
+  };
+
+  let remove = document.createElement("button");
+  remove.className = "remove-button";
+  remove.textContent = "حذف المنتج";
+  remove.style.marginTop = "12px";
+
+  remove.onclick = () => {
+    if (!confirm("هل تريد حذف هذا المنتج؟")) return;
+
+    let products = JSON.parse(
+      localStorage.getItem("luffyProducts") || "[]"
+    );
+
+    products = products.filter(p => p.id !== product.id);
+
+    localStorage.setItem("luffyProducts", JSON.stringify(products));
+    card.remove();
+  };
+
+  card.append(title, price, add, edit, remove);
+  document.getElementById("productList").appendChild(card);
+}
+
+function loadSavedProducts() {
+  let products = JSON.parse(
+    localStorage.getItem("luffyProducts") || "[]"
+  );
+
+  products.forEach(showProduct);
+}
+function addToCart(name, price) {
+  cart.push({name, price});
+  updateCart();
+}
+
+function updateCart() {
+  document.getElementById("count").textContent = cart.length;
+
+  let items = document.getElementById("cartItems");
+  let total = 0;
+
+  items.innerHTML = "";
+
+  cart.forEach((item, index) => {
+    total += item.price;
+
+    items.innerHTML += `
+      <div class="cart-item">
+        <span>${item.name} - $${item.price}</span>
+        <button class="remove-button"
+          onclick="removeItem(${index})">حذف</button>
+      </div>
+    `;
+  });
+
+  document.getElementById("total").textContent = total;
+}
+
+function removeItem(index) {
+  cart.splice(index, 1);
+  updateCart();
+}
+function checkout() {
+  if (cart.length === 0) {
+    alert("السلة فارغة!");
+    return;
+  }
+
+  let message = "مرحباً، أريد طلب المنتجات التالية:\n";
+
+  cart.forEach(item => {
+    message += "\n" + item.name + " - $" + item.price;
+  });
+
+  let total = cart.reduce((sum, item) => sum + item.price, 0);
+
+  message += "\n\nالمجموع: $" + total;
+
+  let phone = "96170203286";
+
+  window.open(
+    "https://wa.me/" + phone + "?text=" + encodeURIComponent(message),
+    "_blank"
+  );
+}
+function toggleCart() {
+  let cartBox = document.getElementById("cart");
+
+  cartBox.style.display =
+    cartBox.style.display === "block" ? "none" : "block";
+}
+loadSavedProducts();
+</script>
+
+</body>
+<a href="https://wa.me/96170203286"
+target="_blank"
+style="position:fixed;bottom:20px;left:20px;
+background:#25D366;color:white;padding:15px;
+border-radius:50px;text-decoration:none;
+font-weight:bold;z-index:999;">
+💬 اطلب عبر واتساب
+</a>
+</html>
